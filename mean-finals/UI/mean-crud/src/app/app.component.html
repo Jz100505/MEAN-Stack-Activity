@@ -1,0 +1,159 @@
+<div class="vault-wrapper">
+
+  <div class="aurora">
+    <div class="aurora-blob blob-1"></div>
+    <div class="aurora-blob blob-2"></div>
+    <div class="aurora-blob blob-3"></div>
+  </div>
+
+  <div class="vault-content">
+
+    <!-- HERO -->
+    <header class="vault-hero">
+      <div class="hero-left">
+        <div class="hero-overline">Library Management System</div>
+        <h1 class="hero-title">
+          Books<br><span class="hero-accent">Vault</span>
+        </h1>
+        <p class="hero-desc">
+          A curated collection system. Add, edit and remove volumes with precision.
+        </p>
+      </div>
+      <div class="hero-right">
+        <div class="hero-stat-num">{{ books.length }}</div>
+        <div class="hero-stat-label">Volumes</div>
+      </div>
+    </header>
+
+    <!-- ADD BOOK -->
+    <section class="add-section">
+      <div class="section-eyebrow">
+        <span class="eyebrow-text">Acquisition</span>
+        <div class="eyebrow-line"></div>
+      </div>
+      <div class="add-card">
+        <div class="add-title">Register a <em>new volume</em></div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Title</label>
+            <input id="newBook" placeholder="Book title">
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <input id="newDesc" placeholder="Brief synopsis">
+          </div>
+          <div class="form-group">
+            <label>Price</label>
+            <input id="newPrice" placeholder="0.00" type="number">
+          </div>
+          <div class="form-group">
+            <label>Author</label>
+            <input id="newAuthor" placeholder="Author name">
+          </div>
+          <div class="form-group">
+            <label>Genre</label>
+            <input id="newGenre" placeholder="Fiction, Sci-Fi...">
+          </div>
+        </div>
+        <button class="btn-primary" (click)="addBook()">
+          <span class="fill"></span>
+          <span class="btn-icon">+</span>
+          <span class="btn-label">Add to Collection</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- COLLECTION -->
+    <section class="collection-section">
+      <div class="collection-header">
+        <h2 class="collection-title">The Collection</h2>
+        @if (books.length > 0) {
+          <p class="collection-count"><strong>{{ books.length }}</strong> volume(s) catalogued</p>
+        }
+      </div>
+
+      <div class="collection-table">
+
+        <!-- Table Header -->
+        <div class="table-head">
+          <div class="th-num">#</div>
+          <div class="th-title">Title</div>
+          <div class="th-author">Author</div>
+          <div class="th-genre">Genre</div>
+          <div class="th-price">Price</div>
+          <div class="th-actions"></div>
+        </div>
+
+        @for (book of books; track book.id; let i = $index) {
+
+          <!-- Book Row -->
+          <div class="book-row" [class.is-editing]="editData?.id === book.id && editMode">
+            <div class="row-num">{{ (i + 1).toString().padStart(2, '0') }}</div>
+            <div class="book-info">
+              <div class="book-title-text">{{ book.title }}</div>
+              <div class="book-desc-text">{{ book.desc }}</div>
+            </div>
+            <div class="book-author">{{ book.author }}</div>
+            <div class="book-genre">
+              <span class="genre-pill">{{ book.genre }}</span>
+            </div>
+            <div class="book-price">&#8369;{{ book.price }}</div>
+            <div class="row-actions">
+              <button class="action-btn action-edit" (click)="populateEdit(book)" title="Edit">&#9998;</button>
+              <button class="action-btn action-delete" (click)="deleteBook(book.id)" title="Delete">&#10005;</button>
+            </div>
+          </div>
+
+          <!-- Inline Edit Panel — appears directly below the matching row -->
+          @if (editMode && editData?.id === book.id) {
+            <div class="inline-edit-panel">
+              <div class="inline-edit-label">&#10022; Editing — <em>{{ editData.title }}</em></div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Title</label>
+                  <input placeholder="Title" [(ngModel)]="editForm.title">
+                </div>
+                <div class="form-group">
+                  <label>Description</label>
+                  <input placeholder="Description" [(ngModel)]="editForm.desc">
+                </div>
+                <div class="form-group">
+                  <label>Price</label>
+                  <input placeholder="Price" [(ngModel)]="editForm.price" type="number">
+                </div>
+                <div class="form-group">
+                  <label>Author</label>
+                  <input placeholder="Author" [(ngModel)]="editForm.author">
+                </div>
+                <div class="form-group">
+                  <label>Genre</label>
+                  <input placeholder="Genre" [(ngModel)]="editForm.genre">
+                </div>
+              </div>
+              <div class="edit-actions">
+                <button class="btn-update" (click)="updateBook()">Save Changes</button>
+                <button class="btn-ghost" (click)="cancelEdit()">Discard</button>
+              </div>
+            </div>
+          }
+
+        } @empty {
+          <div class="empty-state">
+            <div class="empty-glyph">&#66306;</div>
+            <div class="empty-label">No volumes catalogued</div>
+            <div class="empty-sublabel">Begin by adding your first book above</div>
+          </div>
+        }
+
+      </div><!-- /collection-table -->
+    </section>
+
+    <footer class="vault-footer">
+      <div class="footer-brand">Books Vault</div>
+      <div class="footer-copy">MEAN Stack &middot; 2026</div>
+    </footer>
+
+  </div>
+</div>
+
+<router-outlet />
